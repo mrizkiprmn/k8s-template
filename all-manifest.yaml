@@ -1,0 +1,128 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+  labels:
+    app.kubernetes.io/instance: servicename
+    app.kubernetes.io/name: servicename
+    app.kubernetes.io/version: 1.0.0
+  name: servicename
+  namespace: ehrm-dev
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: servicename
+      app.kubernetes.io/name: servicename
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+      labels:
+        app.kubernetes.io/instance: servicename
+        app.kubernetes.io/name: servicename
+    spec:
+      containers:
+      - envFrom:
+        image: your image reistry
+        imagePullPolicy: Always
+        name: servicename
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 300m
+            memory: 256Mi
+          requests:
+            cpu: 200m
+            memory: 128Mi
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      imagePullSecrets:
+      - name: your secret name
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+      
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  labels:
+    app.kubernetes.io/instance: management
+    app.kubernetes.io/name: servicename
+  name: servicename
+  namespace: your namespace
+spec:
+  ports:
+  - name: http
+    port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app.kubernetes.io/instance: servicename
+    app.kubernetes.io/name: servicename
+  sessionAffinity: None
+  type: ClusterIP
+
+
+---
+
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: your letsencrypt
+  name: your servicename
+  namespace: your namespace
+spec:
+  ingressClassName: your ingressClassName 
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: servicename
+            port:
+              number: 9090
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - example.com
+    secretName: tls-name
+
+
+---
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: your service name
+  namespace: your namespace
+data:
+  ENVIRONMENT: "your env"
+
+
+---
+
+apiVersion: v1
+data:
+  .dockerconfigjson: random secret
+kind: Secret
+metadata:
+  name: secret name
+  namespace: your namespace
+type: kubernetes.io/dockerconfigjson

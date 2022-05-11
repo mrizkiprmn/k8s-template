@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: your letsencrypt
+  name: your servicename
+  namespace: your namespace
+spec:
+  ingressClassName: your ingressClassName 
+  rules:
+  - host: example.com
+    http:
+      paths:
+      - backend:
+          service:
+            name: servicename
+            port:
+              number: 9090
+        pathType: ImplementationSpecific
+  tls:
+  - hosts:
+    - example.com
+    secretName: tls-name

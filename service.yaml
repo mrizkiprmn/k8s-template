@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+  labels:
+    app.kubernetes.io/instance: management
+    app.kubernetes.io/name: servicename
+  name: servicename
+  namespace: your namespace
+spec:
+  ports:
+  - name: http
+    port: 3000
+    protocol: TCP
+    targetPort: 3000
+  selector:
+    app.kubernetes.io/instance: servicename
+    app.kubernetes.io/name: servicename
+  sessionAffinity: None
+  type: ClusterIP
