@@ -3,10 +3,10 @@ kind: Service
 metadata:
   annotations:
   labels:
-    app.kubernetes.io/instance: management
+    app.kubernetes.io/instance: servicename
     app.kubernetes.io/name: servicename
   name: servicename
-  namespace: your namespace
+  namespace: namespace
 spec:
   ports:
   - name: http

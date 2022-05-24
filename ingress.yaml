@@ -2,11 +2,11 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
-    cert-manager.io/cluster-issuer: your letsencrypt
-  name: your servicename
-  namespace: your namespace
+    cert-manager.io/cluster-issuer: letsencrypt
+  name: servicename
+  namespace: namespace
 spec:
-  ingressClassName: your ingressClassName 
+  ingressClassName: ingressClassName 
   rules:
   - host: example.com
     http:
