@@ -10,14 +10,20 @@ spec:
       app: servicename
   template:
     metadata:
+      annotations:
+        prome/example: "true"
+        prome/port: "1234"
       labels:
         app: servicename
     spec:
+      imagePullSecrets:
+        - name: image secret
       containers:
       - name: servicename
-        image: image registry
-        imagePullSecrets:
-          - name: image secrets
+        image: registry image
         imagePullPolicy: Always
         ports:
         - containerPort: 80
+        envFrom:
+          - configMapRef:
+              name: cfg

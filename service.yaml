@@ -8,6 +8,7 @@ metadata:
   name: servicename
   namespace: namespace
 spec:
+  type: NodePort/LoadBalancer/ClusterIP
   ports:
   - name: http
     port: 3000
@@ -16,5 +17,3 @@ spec:
   selector:
     app.kubernetes.io/instance: servicename
     app.kubernetes.io/name: servicename
-  sessionAffinity: None
-  type: ClusterIP

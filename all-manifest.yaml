@@ -10,17 +10,23 @@ spec:
       app: servicename
   template:
     metadata:
+      annotations:
+        prome/example: "true"
+        prome/port: "1234"
       labels:
         app: servicename
     spec:
+      imagePullSecrets:
+        - name: image secret
       containers:
       - name: servicename
         image: registry image
-        imagePullSecrets:
-          - name: image secret
         imagePullPolicy: Always
         ports:
         - containerPort: 80
+        envFrom:
+          - configMapRef:
+              name: cfg
       
 ---
 
@@ -34,6 +40,7 @@ metadata:
   name: servicename
   namespace: namespace
 spec:
+  type: NodePort/LoadBalancer/ClusterIP
   ports:
   - name: http
     port: 3000
@@ -42,8 +49,6 @@ spec:
   selector:
     app.kubernetes.io/instance: servicename
     app.kubernetes.io/name: servicename
-  sessionAffinity: None
-  type: ClusterIP
 
 
 ---
